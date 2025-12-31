@@ -1,19 +1,9 @@
-# projekt-pp - 4. Zarządzanie flotą Mechów Bojowych
+# projekt-pp - Projekt na zaliczenie Podstaw Programowania
+
+### Wybrany temat: test
+### Autorzy: aaa, bbb, ccc
+
+**Wybrany temat:** test
+**Autorzy projektu:** aaa, bbb, ccc
 
 
-
-#include <stdio.h>
-
-int main() {
-    //program wyświetla menu z którego użytkownik może wybrać daną opcję w zależności od tego jaką czynność chce wykonać we flocie. Potem prosi użytkownika o wprowadzenie wymarzonej przez niego opcji
-    int opcja;
-    printf("=== SYSTEM ZARZADZANIA FLOTA MECHOW ===\n1. Dodaj nowego mecha\n2. Wyswietl wszystkie jednostki\n3. Edytuj dane mecha (np. przypisz pilota)\n4. Usun jednostke z ewidencji\n5. Zakoncz program\n");
-    while(1){
-        printf("wybierz opcje: ");
-        scanf("%d", &opcja);
-        switch(opcja){
-            case(1):
-        }
-    }
-    return 0;
-}
