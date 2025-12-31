@@ -13,7 +13,7 @@
 
 | Plik   | Opis   |
 | :---   | :----: |
-| main.c | Główny plik zawierający główną logikę programu (menu oraz wybór) |
+| main.c | Główny plik zawierający punkt wejścia programu (menu oraz wybór) |
 
 ## Struktura plików tekstowych
 
