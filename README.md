@@ -9,7 +9,7 @@
 
 ## Treść zadania (tymczasowo):
 
-###4. Zarządzanie flotą Mechów Bojowych
+### 4. Zarządzanie flotą Mechów Bojowych
 
 W roku 2264 wojny prowadzone są nie przez klasyczne armie, lecz przez pilotów sterujących gigantycznymi mechami bojowymi. Każdy z tych potężnych egzomechów wyposażony jest w zaawansowany reaktor, systemy uzbrojenia, pancerze i moduły specjalne. Ich wartość jest ogromna, a utrata choć jednego z nich może zaważyć na wyniku całej kampanii militarnej.
 
