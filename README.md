@@ -3,7 +3,7 @@
 ## Informacje o projekcie:
 ###  Wybrany temat: 4. Zarządzanie flotą Mechów Bojowych
 ### Autorzy projektu:
-- [Mateusz Tomczuk](https://github.com/mati225)
+- [Mateusz Tomczuk](https://github.com/mati2225)
 - [Michał Zwierzyński](https://github.com/Miyotaka727)
 - [Kuba Kirej](https://github.com/KubaKSalony334)
 

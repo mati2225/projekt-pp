@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+//dfsdfds
 int main() {
     //program wyświetla menu z którego użytkownik może wybrać daną opcję w zależności od tego jaką czynność chce wykonać we flocie. Potem prosi użytkownika o wprowadzenie wymarzonej przez niego opcji
     int opcja;
