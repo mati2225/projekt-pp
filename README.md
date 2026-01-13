@@ -7,7 +7,8 @@
 - [Michał Zwierzyński](https://github.com/Miyotaka727)
 - [Kuba Kirej](https://github.com/KubaKSalony334)
 
-## Treść zadania (tymczasowo):
+## Treść zadania:
+###### (tymczasowo w repozytorium zeby lepiej sie pracowalo)
 
 ### 4. Zarządzanie flotą Mechów Bojowych
 
