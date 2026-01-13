@@ -1,19 +1,17 @@
 #include <stdio.h>
 #include "menu.h"
 
-void showIntro();
+void show_intro();
 
 int main() {
-	showIntro();
+	show_intro();
 
-	while (menu_show() != 0) {
+	while (menu_show() != 0) {}
 
-	}
-
-	printf("Wylaczanie programu...\n");
+	printf("[*] Wylaczanie programu...\n");
 	return 0;
 }
 
-void showIntro() {
-	printf("=== intro ===\n");
+void show_intro() {
+	printf("╔═[CENTRALNY SYSTEM EWIDENCJI MECHOW]═╗\n║ Autorzy:                            ║\n║ - Mateusz Tomczuk                   ║\n║ - Michal Zwierzynski                ║\n║ - Kuba Kirej                        ║\n╚═════════════════════════════════════╝");
 }

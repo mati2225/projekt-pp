@@ -1,7 +1,7 @@
 #include "menu.h"
 
-int menu_show() {
-	printf("menu placeholder\n1.\n2.\n3.\n0.\n>> ");
+int menu_show() {           	
+	printf("\n╔═══════════════════════╗\n║ 1. Test               ║\n║ 2. Test               ║\n║ 3. Test               ║\n║ 0. Wyjscie z programu ║\n╚═══════════════════════╝\n>> ");
 
 	int choice;
 	scanf("%d", &choice);
@@ -10,7 +10,6 @@ int menu_show() {
 			printf("[!] Wybrana opcja nie istnieje\n");
 			return -1;
 		case 0:
-			printf("exit\n");
 			return 0;
 		case 1:
 			printf("option 1\n");
