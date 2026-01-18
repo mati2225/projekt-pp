@@ -26,6 +26,16 @@ typedef struct Mech {
     enum MechTechnicalCondition condition;   
 } Mech;
 
+typedef struct Node {
+    struct Mech mech_object;
+    struct Node* next;
+} Node;
+
+Node* push_back(Node* head, Mech mech_object);
+Node* push_front(Node* head, Mech mech_object);
+Node* free_list(Node* head);
+void print_list(Node* head);
+
 const char* mech_class_to_str(enum MechClass s);
 const char* mech_technical_condition_to_str(enum MechTechnicalCondition s);
 

@@ -1,4 +1,45 @@
+#include <stdlib.h>
+#include <stddef.h>
 #include "data.h"
+
+Node* push_back(Node* head, Mech mech_object) {
+    Node* n = calloc(1, sizeof(Node));
+    n->mech_object = mech_object;
+
+    if (head == NULL)
+        return n;
+
+    Node* p = head;
+    while (p->next != NULL) {
+        p = p->next;
+    }
+    p->next = n;
+    return head;
+}
+
+Node* push_front(Node* head, Mech mech_object) {
+    Node* n = calloc(1, sizeof(Node));
+    n->mech_object = mech_object;
+    n->next = head;
+    return n;
+}
+
+Node* free_list(Node* head) {
+    Node* p = head;
+    while (p != NULL) {
+        Node* next = p->next;
+        free(p);
+        p = next;
+    }
+    return NULL;
+}
+
+void print_list(Node* head) {
+    Node* p = head;
+    while (p != NULL) {
+        // ...
+    }
+}
 
 const char* mech_class_to_str(enum MechClass s) {
     switch (s) {
