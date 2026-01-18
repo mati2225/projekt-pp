@@ -1,4 +1,5 @@
 #include "menu.h"
+#include "data.h"
 
 //te funkcje sa prywatne i sa dostepne tylko w obrebie menu.c
 void menu_add_new_mech();
@@ -32,7 +33,36 @@ int menu_show() {
 }
 
 void menu_add_new_mech() {
-	printf("option 1\n");
+	char model[101], pilot[51];
+	char* class_converted = NULL;
+	int class;
+	while (true) {
+		printf("\n╔═[DODAWANIE MECHA]══════════════════╗\n║ WPROWADZ WYMAGANE DANE             ║\n╚════════════════════════════════════╝\n-= Model (unikalna nazwa mecha, identyfikator jednostki)  \n>> "); 
+		while (scanf(" %100[^\n]s", model) != 1) {
+			printf("[!] Wprowadzono bledne dane\n-= Model (unikalna nazwa mecha, identyfikator jednostki)  \n>> ");
+		}
+
+		printf("-= Klasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - obronny; )\nWprowadzenie wartosci z przedzialu innego niz <0; 3> oznacza brak klasy\n>> ");
+		while (scanf(" %d", &class) != 1) {
+			printf("[!] Wprowadzono bledne dane\n-= Klasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - obronny; )\nWybranie wartosci z przedzialu innego niz <0; 3> oznacza brak klasy\n>> ");
+		}
+		class_converted = mech_class_to_str((enum MechClass)class);
+
+		printf("-= Przydzielony pilot (Imie i nazwisko)\n>> ");
+		while (scanf(" %50[^\n]s", pilot) != 1) {
+			printf("[!] Wprowadzono bledne dane\n-= Przydzielony pilot (Imie i nazwisko)\n>> ");
+		}
+	
+		printf("\n╔═[DODAWANIE MECHA]══════════════════╗\n║ WERYFIKACJA WPROWADZONYCH DANYCH   ║\n╚════════════════════════════════════╝\n- MODEL: %s \n- KLASA: %s\n- PRZYDZIELONY PILOT: %s\nCzy wprowadzone dane sa poprawne? (1 - TAK; 0 - NIE): ", model, class_converted, pilot);
+		int option;
+		scanf(" %d", &option);
+		if (option != 0) { 
+			break;
+		}
+		else {
+			continue;
+		}
+	}
 }
 
 int menu_edit_mech_data() {
