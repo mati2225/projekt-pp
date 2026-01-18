@@ -37,7 +37,6 @@ Node* free_list(Node* head) {
 void print_list(Node* head) {
     Node* p = head;
     while (p != NULL) {
-        // ...
     }
 }
 
