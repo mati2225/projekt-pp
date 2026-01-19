@@ -45,6 +45,7 @@ void menu_add_new_mech() {
 		printf("-= Klasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - obronny; )\nWprowadzenie wartosci z przedzialu innego niz <0; 3> oznacza brak klasy\n>> ");
 		while (scanf(" %d", &class) != 1) {
 			printf("[!] Wprowadzono bledne dane\n-= Klasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - obronny; )\nWybranie wartosci z przedzialu innego niz <0; 3> oznacza brak klasy\n>> ");
+			while(getchar() != '\n');
 		}
 		class_converted = mech_class_to_str((enum MechClass)class);
 
