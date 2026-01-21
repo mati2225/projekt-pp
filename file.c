@@ -12,10 +12,12 @@ int file_init(const char* path) {
         return 0;
     }
 
+    init_list(global_list);
     mech_object temp;
 
-    while (fread(&rr, sizeof(mech_object), 1, fptr) == 1) {
-        printf("%s %d %d %d %d %s %d\n", rr.model, rr.type, rr.reactor_power, rr.armor_health, rr.ammo, rr.assigned_pilot, rr.condition);
+    while (fread(&temp, sizeof(mech_object), 1, fptr) == 1) {
+        push_back(global_list, temp);
+        //printf("%s %d %d %d %d %s %d\n", rr.model, rr.type, rr.reactor_power, rr.armor_health, rr.ammo, rr.assigned_pilot, rr.condition);
     }
 
     fclose(fptr);

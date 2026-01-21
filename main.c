@@ -13,12 +13,13 @@ int main(int argc, char** argv) {
 
 	const char* path = argv[1];
 	
-	if (!file_init(path))
-		return 1;
+	if (!file_init(path)) return 1;
 
 	show_intro();
 
 	while (menu_show() != 0);
+
+	//if (!file_save(path)) return 1;
 
 	printf("[*] Wylaczanie programu...\n");
 	return 0;
