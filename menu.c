@@ -10,7 +10,7 @@ void menu_display_mech_list();
 int menu_show() {
 	printf("\n╔═[GLOWNE MENU]═══════════════════════════════╗\n║ 1. Dodaj nowego mecha                       ║\n║ 2. Edytuj wybrana jednostke                 ║\n║ 3. Wyswietl informacje o wybranej jednostce ║\n║ 4. Wyswietl wszystkie jednostki             ║\n║ 0. Wyjscie z programu                       ║\n╚═════════════════════════════════════════════╝\n>> ");
 	char choice;
-	scanf("%c", &choice);
+	scanf(" %c", &choice);
 	switch (choice) {
 		default:
 			printf("[!] Wybrana opcja nie istnieje\n");
@@ -21,7 +21,7 @@ int menu_show() {
 			menu_add_new_mech();
 			return 1;
 		case '2':
-			while (menu_edit_mech_data() != 0) {}
+			while (menu_edit_mech_data() != 0);
 			return 2;
 		case '3':
 			menu_print_mech_data();
@@ -34,30 +34,33 @@ int menu_show() {
 
 void menu_add_new_mech() {
 	char model[101], pilot[51];
-	char* class_converted = NULL;
-	int class;
+	char* type_converted = NULL;
+	int type;
 	while (true) {
 		printf("\n╔═[DODAWANIE MECHA]══════════════════╗\n║ WPROWADZ WYMAGANE DANE             ║\n╚════════════════════════════════════╝\n-= Model (unikalna nazwa mecha, identyfikator jednostki)  \n>> ");
 		while (scanf(" %100[^\n]s", model) != 1) {
 			printf("[!] Wprowadzono bledne dane\n-= Model (unikalna nazwa mecha, identyfikator jednostki)  \n>> ");
+			while(getchar() != '\n');
 		}
 
 		printf("-= Klasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - obronny; )\nWprowadzenie wartosci z przedzialu innego niz <0; 3> oznacza brak klasy\n>> ");
-		while (scanf(" %d", &class) != 1) {
+		while (scanf(" %d", &type) != 1) {
 			printf("[!] Wprowadzono bledne dane\n-= Klasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - obronny; )\nWybranie wartosci z przedzialu innego niz <0; 3> oznacza brak klasy\n>> ");
 			while(getchar() != '\n');
 		}
-		class_converted = mech_class_to_str((enum MechClass)class);
+		type_converted = mech_type_to_str((enum mech_type) type);
 
 		printf("-= Przydzielony pilot (Imie i nazwisko)\n>> ");
 		while (scanf(" %50[^\n]s", pilot) != 1) {
 			printf("[!] Wprowadzono bledne dane\n-= Przydzielony pilot (Imie i nazwisko)\n>> ");
+			while(getchar() != '\n');
 		}
 
-		printf("\n╔═[DODAWANIE MECHA]══════════════════╗\n║ WERYFIKACJA WPROWADZONYCH DANYCH   ║\n╚════════════════════════════════════╝\n- MODEL: %s \n- KLASA: %s\n- PRZYDZIELONY PILOT: %s\nCzy wprowadzone dane sa poprawne? (1 - TAK; 0 - NIE): ", model, class_converted, pilot);
+		printf("\n╔═[DODAWANIE MECHA]══════════════════╗\n║ WERYFIKACJA WPROWADZONYCH DANYCH   ║\n╚════════════════════════════════════╝\n- MODEL: %s \n- KLASA: %s\n- PRZYDZIELONY PILOT: %s\nCzy wprowadzone dane sa poprawne? (1 - TAK; 0 - NIE): ", model, type_converted, pilot);
 		char option;
 		scanf(" %c", &option);
 		if (option != '0') {
+			//dodawanie nowej jednostki
 			break;
 		}
 		else {

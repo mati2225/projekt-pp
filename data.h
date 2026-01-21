@@ -1,14 +1,14 @@
 #ifndef DATA_H
 #define DATA_H
 
-enum MechClass {
+enum mech_type {
     SZTURMOWY,
     WSPARCIA_OGNIOWEGO,
     REKONESANSOWY,
     OBRONNY
 };
 
-enum MechTechnicalCondition {
+enum mech_condition {
     SPRAWNY,
     WYMAGA_PRZEGLADU,
     USZKODZONY,
@@ -16,27 +16,27 @@ enum MechTechnicalCondition {
     W_DEMONTAZU
 };
 
-typedef struct Mech {
+typedef struct mech_object {
     char model[101];
-    enum MechClass class;
+    enum mech_type type;
     int reactor_power;
     int armor_health;
     int ammo;
     char assigned_pilot[51];
-    enum MechTechnicalCondition condition;   
-} Mech;
+    enum mech_condition condition;   
+} mech_object;
 
 typedef struct Node {
-    struct Mech mech_object;
+    struct mech_object mechObj;
     struct Node* next;
 } Node;
 
-Node* push_back(Node* head, Mech mech_object);
-Node* push_front(Node* head, Mech mech_object);
+Node* push_back(Node* head, mech_object mechObj);
+Node* push_front(Node* head, mech_object mechObj);
 Node* free_list(Node* head);
 void print_list(Node* head);
 
-const char* mech_class_to_str(enum MechClass s);
-const char* mech_technical_condition_to_str(enum MechTechnicalCondition s);
+const char* mech_type_to_str(enum mech_type t);
+const char* mech_condition_to_str(enum mech_condition c);
 
 #endif

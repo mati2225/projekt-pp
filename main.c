@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
 
 	show_intro();
 
-	while (menu_show() != 0) {}
+	while (menu_show() != 0);
 
 	printf("[*] Wylaczanie programu...\n");
 	return 0;
