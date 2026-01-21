@@ -5,7 +5,7 @@
 void menu_add_new_mech();
 int menu_edit_mech_data();
 void menu_print_mech_data();
-void menu_display_mech_list();
+int menu_display_mech_list();
 
 int menu_show() {
 	printf("\n╔═[GLOWNE MENU]═══════════════════════════════╗\n║ 1. Dodaj nowego mecha                       ║\n║ 2. Edytuj wybrana jednostke                 ║\n║ 3. Wyswietl informacje o wybranej jednostce ║\n║ 4. Wyswietl wszystkie jednostki             ║\n║ 0. Wyjscie z programu                       ║\n╚═════════════════════════════════════════════╝\n>> ");
@@ -110,6 +110,34 @@ void menu_print_mech_data() {
 	printf("option 3\n");
 }
 
-void menu_display_mech_list() {
-	printf("option 4\n");
+
+int menu_display_mech_list() {
+    printf("╔═[LISTA WSZYSTKICH OBIEKTOW]══════════════════════╗\n║ 1 - Pokaz wszystkie obiekty                      ║\n║ 2 - Wyszukaj po nazwie                           ║\n║ 3 - Sortuj alfabetycznie wg nazwy                ║\n║ 4 - Sortuj malejaco wg wybranego pola liczbowego ║\n║ 5 - Sortuj rosnaco wg wybranego pola liczbowego  ║\n║ 6 - Filtruj wg wybranego pola liczbowego         ║\n║ 7 - Statystyki                                   ║\n║ 0 - Powrot do poprzedniego menu                  ║\n╚══════════════════════════════════════════════════╝\n>> ");
+
+    char choice;
+    scanf(" %c", &choice);
+    switch (choice) {
+        default:
+            printf("[!] Wybrana opcja nie istnieje\n");
+            return -1;
+        case '0':
+            return 0;
+        case '1':
+            return 1;
+        case '2':
+            return 2;
+        case '3':
+            return 3;
+        case '4':
+            return 4;
+        case '5':
+            return 5;
+        case '6':
+            return 6;
+        case '7':
+            return 7;
+    }
+}
+void show_intro() {
+	printf("╔═[CENTRALNY SYSTEM EWIDENCJI MECHOW]═╗\n║ Autorzy:                            ║\n║ - Mateusz Tomczuk                   ║\n║ - Michal Zwierzynski                ║\n║ - Kuba Kirej                        ║\n╚═════════════════════════════════════╝");
 }

@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
 	}
 
 	const char* path = argv[1];
-	
+
 	if (!file_init(path)) return 1;
 
 	show_intro();
@@ -23,8 +23,4 @@ int main(int argc, char** argv) {
 
 	printf("[*] Wylaczanie programu...\n");
 	return 0;
-}
-
-void show_intro() {
-	printf("╔═[CENTRALNY SYSTEM EWIDENCJI MECHOW]═╗\n║ Autorzy:                            ║\n║ - Mateusz Tomczuk                   ║\n║ - Michal Zwierzynski                ║\n║ - Kuba Kirej                        ║\n╚═════════════════════════════════════╝");
 }
