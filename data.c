@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "data.h"
 
 List global_list;
@@ -108,15 +109,6 @@ Node* find_first_single(const List* list, mech_object mechObj) {
     return NULL;
 }
 
-Node* find_first_multi(const List* list, mech_object mechObj) {
-    Node* p = list->head;
-    while (p != NULL) {
-        if (partial_match_multi(p->mechObj, mechObj)) return p;
-        p = p->next;
-    }
-    return NULL;
-}
-
 void remove_node(List* list, Node* node) {
     if (node == NULL) return;
 
@@ -145,14 +137,6 @@ int remove_first(List* list, mech_object mechObj) {
 
 int remove_first_single(List* list, mech_object mechObj) {
     Node* node = find_first_single(list, mechObj);
-    if (node == NULL) return 0;
-
-    remove_node(list, node);
-    return 1;
-}
-
-int remove_first_multi(List* list, mech_object mechObj) {
-    Node* node = find_first_multi(list, mechObj);
     if (node == NULL) return 0;
 
     remove_node(list, node);
@@ -195,37 +179,9 @@ int remove_all_single(List* list, mech_object mechObj) {
     return count;
 }
 
-int remove_all_multi(List* list, mech_object mechObj) {
-    int count = 0;
-    Node* p = list->head;
-
-    while (p != NULL) {
-        Node* next = p->next;
-
-        if (partial_match_multi(p->mechObj, mechObj)) {
-            remove_node(list, p);
-            count++;
-        }
-
-        p = next;
-    }
-
-    return count;
-}
-
 int count_elements(List* list) {
     int count = 0;
     Node* p = list->head;
-    while (p != NULL) {
-        count++;
-        p = p->next;
-    }
-    return count;
-}
-
-int count_nodes(Node* node) {
-    int count = 0;
-    Node* p = node;
     while (p != NULL) {
         count++;
         p = p->next;
@@ -287,11 +243,6 @@ bool compare_objects_by_model(const mech_object a, const mech_object b) {
 bool partial_match_single(const mech_object a, const mech_object b) {
     int pilot = strcmp(a.assigned_pilot, b.assigned_pilot);
     return (pilot == 0) || a.type == b.type || a.reactor_power == b.reactor_power || a.armor_health == b.armor_health || a.ammo == b.ammo || a.condition == b.condition;
-}
-
-bool partial_match_multi(const mech_object a, const mech_object b) {
-    int pilot = strcmp(a.assigned_pilot, b.assigned_pilot);
-    return (pilot == 0) && a.type == b.type && a.reactor_power == b.reactor_power && a.armor_health == b.armor_health && a.ammo == b.ammo && a.condition == b.condition;
 }
 
 List* filter_by_reactor_power(List* list, int threshold) {
@@ -409,12 +360,26 @@ Node* split(Node *head, int n) {
     return second;
 }
 
+int alpha_case_compare(const char *s1, const char *s2) {
+    while (*s1 && *s2) {
+        char c1 = tolower((unsigned char)*s1);
+        char c2 = tolower((unsigned char)*s2);
+        if (c1 != c2)
+            return c1 - c2;
+        if (*s1 != *s2)
+            return *s2 - *s1;
+        s1++;
+        s2++;
+    }
+    return *s1 - *s2;
+}
+
 Node* merge(Node *a, Node *b, Node **outTail) {
     Node *head = NULL, *curr = NULL;
 
     while (a && b) {
         Node *next;
-        if (strcmp(a->mechObj.model, b->mechObj.model) <= 0) {
+        if (alpha_case_compare(a->mechObj.model, b->mechObj.model) <= 0) {
             next = a; a = a->next;
         } else {
             next = b; b = b->next;

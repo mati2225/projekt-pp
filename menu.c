@@ -68,7 +68,7 @@ void menu_add_new_mech() {
 		printf("Klasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - Obronny; )\nWprowadzenie wartości z przedziału innego niż <0; 3> oznacza brak klasy\n>> ");
 		
 		getchar();
-		while (scanf(" %d", &type) != 1) {
+		while (scanf("%d", &type) != 1) {
 			printf("[!] Wprowadzono błędne dane\nKlasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - Obronny; )\nWybranie wartości z przedziału innego niż <0; 3> oznacza brak klasy\n>> ");
 			while(getchar() != '\n');
 		}
@@ -264,7 +264,7 @@ int menu_edit_mech_data(mech_object* mechObj) {
 				printf("[i] Operacja została anulowana");
 			}
 			
-			return 9;
+			return 0;
 	}
 }
 

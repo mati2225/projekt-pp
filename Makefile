@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall
-DATA_FILE = test2.bin
+DATA_FILE = data.bin
 
 all: projektpp
 
