@@ -344,6 +344,27 @@ List* copy_list_ptr(const List* list) {
     return copy;
 }
 
+int alpha_char_compare(const char *s1, const char *s2) {
+    while (*s1 && *s2) {
+        char c1 = *s1;
+        char c2 = *s2;
+        char l1 = tolower((unsigned char)c1);
+        char l2 = tolower((unsigned char)c2);
+        if (l1 != l2)
+            return l1 - l2;
+        if (c1 != c2) {
+            if (isupper((unsigned char)c1) && islower((unsigned char)c2))
+                return -1;
+            if (islower((unsigned char)c1) && isupper((unsigned char)c2))
+                return 1;
+        }
+        s1++;
+        s2++;
+    }
+
+    return *s1 - *s2;
+}
+
 Node* split(Node *head, int n) {
     while (--n && head)
         head = head->next;
@@ -360,26 +381,12 @@ Node* split(Node *head, int n) {
     return second;
 }
 
-int alpha_case_compare(const char *s1, const char *s2) {
-    while (*s1 && *s2) {
-        char c1 = tolower((unsigned char)*s1);
-        char c2 = tolower((unsigned char)*s2);
-        if (c1 != c2)
-            return c1 - c2;
-        if (*s1 != *s2)
-            return *s2 - *s1;
-        s1++;
-        s2++;
-    }
-    return *s1 - *s2;
-}
-
 Node* merge(Node *a, Node *b, Node **outTail) {
     Node *head = NULL, *curr = NULL;
 
     while (a && b) {
         Node *next;
-        if (alpha_case_compare(a->mechObj.model, b->mechObj.model) <= 0) {
+        if (alpha_char_compare(a->mechObj.model, b->mechObj.model) <= 0) {
             next = a; a = a->next;
         } else {
             next = b; b = b->next;

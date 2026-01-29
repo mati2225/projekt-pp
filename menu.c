@@ -34,7 +34,7 @@ int menu_show() {
 
 			mech_object* mechObj = find_by_exact_model(&global_list, model);
 			if (mechObj == NULL) {
-				printf("[!] Jednostka o podanym modelu nie istnieje");
+				printf("[!] Jednostka o podanym modelu nie istnieje\n");
 				return 2;
 			}
 
@@ -68,7 +68,7 @@ void menu_add_new_mech() {
 		printf("Klasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - Obronny; )\nWprowadzenie wartości z przedziału innego niż <0; 3> oznacza brak klasy\n>> ");
 		
 		getchar();
-		while (scanf("%d", &type) != 1) {
+		while (scanf(" %d", &type) != 1) {
 			printf("[!] Wprowadzono błędne dane\nKlasa (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - Obronny; )\nWybranie wartości z przedziału innego niż <0; 3> oznacza brak klasy\n>> ");
 			while(getchar() != '\n');
 		}
@@ -282,7 +282,6 @@ int menu_display_mech_list() {
         case '0':
             return 0;
         case '1':
-			//print_forward(&global_list);
 			menu_list_print(&global_list);
 			printf("\nLICZBA WSZYSTKICH JEDNOSTEK: %d\n", count_elements(&global_list));
             return 1;
