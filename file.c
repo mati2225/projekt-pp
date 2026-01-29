@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "file.h"
 #include "data.h"
 
@@ -12,12 +13,11 @@ int file_init(const char* path) {
         return 0;
     }
 
-    init_list(global_list);
+    init_list(&global_list);
     mech_object temp;
 
     while (fread(&temp, sizeof(mech_object), 1, fptr) == 1) {
-        push_back(global_list, temp);
-        //printf("%s %d %d %d %d %s %d\n", rr.model, rr.type, rr.reactor_power, rr.armor_health, rr.ammo, rr.assigned_pilot, rr.condition);
+        push_back(&global_list, temp);
     }
 
     fclose(fptr);
@@ -31,12 +31,19 @@ int file_save(const char* path) {
         return 0;
     }
 
-    /*size_t num_written = fwrite(&test1, sizeof(Mech), 1, fptr);
-    if (num_written != 1) {
-        perror("[!] blad");
+    int elements = count_elements(&global_list);
+    size_t out_size;
+    mech_object* allObjects = list_to_array(&global_list, &out_size);
+    size_t num_written = fwrite(allObjects, sizeof(mech_object), elements, fptr);
+
+    if (num_written != (size_t) elements) {
+        fprintf(stderr, "[!] Zapisano tylko %zu z %d elementow", num_written, elements);
         fclose(fptr);
         return 0;
-    }*/
+    }
+
+    free(allObjects);
+    allObjects = NULL;
     
     fclose(fptr);
     return 1;
