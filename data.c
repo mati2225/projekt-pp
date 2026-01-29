@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stddef.h>
+#include <stdio.h>
+#include <string.h>
 #include "data.h"
 
-List* global_list = NULL;
+List global_list;
 
 void init_list(List* list) {
     list->head = NULL;
@@ -40,7 +42,7 @@ void push_back(List* list, mech_object mechObj) {
     if (n == NULL) return;
 
     n->next = NULL;
-    n->prev - list->tail;
+    n->prev = list->tail;
 
     if (list->tail != NULL) {
         list->tail->next = n;
@@ -48,27 +50,33 @@ void push_back(List* list, mech_object mechObj) {
         list->head = n;
     }
 
-    list->head = n;
+    list->tail = n;
 }
 
 void print_forward(const List* list) {
     const Node* p = list->head;
+    int index = 0;
     while (p != NULL) {
-        print_mech_object(p->mechObj);
+        index++;
+        print_mech_object(index, p->mechObj);
         p = p->next;
     }
 }
 
 void print_backward(const List* list) {
     const Node* p = list->tail;
+    int index = 0;
     while (p != NULL) {
-        print_mech_object(p->mechObj);
+        index++;
+        print_mech_object(index, p->mechObj);
         p = p->prev;
     }
 }
 
-void print_mech_object(mech_object mechObj) {
-    printf("%s | %d | %d | %d | %d | %s | %d\n", mechObj.model, mechObj.type, mechObj.reactor_power, mechObj.armor_health, mechObj.ammo, mechObj.assigned_pilot, mechObj.condition);
+void print_mech_object(int index, mech_object mechObj) {
+    const char* type_converted = mech_type_to_str(mechObj.type);
+    const char* condition_converted = mech_condition_to_str(mechObj.condition);
+    printf("[%d] %s: [Klasa: %s | Moc reaktora: %d MW | Pancerz: %d | Amunicja: %d | Pilot: %s | Stan: %s]\n", index, mechObj.model, type_converted, mechObj.reactor_power, mechObj.armor_health, mechObj.ammo, mechObj.assigned_pilot, condition_converted);
 }
 
 void free_list(List* list) {
@@ -85,7 +93,25 @@ void free_list(List* list) {
 Node* find_first(const List* list, mech_object mechObj) {
     Node* p = list->head;
     while (p != NULL) {
-        if (p->mechObj == mechObj) return p;
+        if (compare_objects_by_model(p->mechObj, mechObj)) return p;
+        p = p->next;
+    }
+    return NULL;
+}
+
+Node* find_first_single(const List* list, mech_object mechObj) {
+    Node* p = list->head;
+    while (p != NULL) {
+        if (partial_match_single(p->mechObj, mechObj)) return p;
+        p = p->next;
+    }
+    return NULL;
+}
+
+Node* find_first_multi(const List* list, mech_object mechObj) {
+    Node* p = list->head;
+    while (p != NULL) {
+        if (partial_match_multi(p->mechObj, mechObj)) return p;
         p = p->next;
     }
     return NULL;
@@ -117,14 +143,66 @@ int remove_first(List* list, mech_object mechObj) {
     return 1;
 }
 
-int remove_all(List* list, mech_object mechObj) {
+int remove_first_single(List* list, mech_object mechObj) {
+    Node* node = find_first_single(list, mechObj);
+    if (node == NULL) return 0;
+
+    remove_node(list, node);
+    return 1;
+}
+
+int remove_first_multi(List* list, mech_object mechObj) {
+    Node* node = find_first_multi(list, mechObj);
+    if (node == NULL) return 0;
+
+    remove_node(list, node);
+    return 1;
+}
+
+int remove_exact(List* list, mech_object mechObj) {
+    Node* p = list->head;
+    int c = 0;
+
+    while (p != NULL) {
+        Node* next = p->next;
+
+        if (compare_objects_by_model(p->mechObj, mechObj)) {
+            remove_node(list, p);
+            c++;
+        }
+
+        p = next;
+    }
+
+    return c;
+}
+
+int remove_all_single(List* list, mech_object mechObj) {
     int count = 0;
     Node* p = list->head;
 
     while (p != NULL) {
         Node* next = p->next;
 
-        if (p->mechObj == mechObj) {
+        if (partial_match_single(p->mechObj, mechObj)) {
+            remove_node(list, p);
+            count++;
+        }
+
+        p = next;
+    }
+
+    return count;
+}
+
+int remove_all_multi(List* list, mech_object mechObj) {
+    int count = 0;
+    Node* p = list->head;
+
+    while (p != NULL) {
+        Node* next = p->next;
+
+        if (partial_match_multi(p->mechObj, mechObj)) {
             remove_node(list, p);
             count++;
         }
@@ -145,54 +223,88 @@ int count_elements(List* list) {
     return count;
 }
 
-//////////////
-
-bool average_reactor_power(List* list, double* result) {
+int count_nodes(Node* node) {
     int count = 0;
-    double sum = 0;
-
-    for (Node* p = list->head; p != NULL; p = p->next) {
-        sum += p->mechObj.reactor_power;
+    Node* p = node;
+    while (p != NULL) {
         count++;
+        p = p->next;
     }
-
-    if (count == 0) return false;
-
-    *result = sum / count;
-    return true;
+    return count;
 }
 
-bool find_min_armor(List* list, double* result) {
-    const Node* head = list->head;
-    if (head == NULL) return false;
-
-    double min = head->mechObj.armor_health;
-    for (Node* p = head->next; p != NULL; p = p->next) {
-        if (p->mechObj.armor_health < min) min = p->mechObj.armor_health;
+int list_by_model(List* list, const char* model) {
+    Node* p = list->head;
+    int count = 0;
+    while (p != NULL) {
+        if (strcmp(p->mechObj.model, model) == 0 || strstr(p->mechObj.model, model) != NULL) {
+            count++;
+            print_mech_object(count, p->mechObj);
+        }
+        p = p->next;
     }
-
-    *result = min;
-    return true;
+    return count;
 }
 
-bool find_max_armor(List* list, double* result) {
-    const Node* head = list->head;
-    if (head == NULL) return false;
-
-    double max = head->mechObj.armor_health;
-    for (Node* p = head->next; p != NULL; p = p->next) {
-        if (p->mechObj.armor_health > max) max = p->mechObj.armor_health;
+mech_object* find_by_exact_model(List* list, const char* model) {
+    Node* p = list->head;
+    while (p != NULL) {
+        if (strcmp(p->mechObj.model, model) == 0) {
+            return &p->mechObj;
+        }
+        p = p->next;
     }
-
-    *result = max;
-    return 
+    return NULL;
 }
 
-List* filter_by_armor(List* list, int threshold) {
-    List* filtered = NULL;
+mech_object* list_to_array(List* list, size_t* out_size) {
+    Node* head = list->head;
+    if (head == NULL || out_size == NULL) {
+        return NULL;
+    }
+
+    size_t size = (size_t)count_elements(list);
+    mech_object* array = malloc(size * sizeof(mech_object));
+    if (array == NULL) {
+        return NULL;
+    }
+
+    Node* cur = head;
+    for (size_t i = 0; i < size; i++) {
+        array[i] = cur->mechObj;
+        cur = cur->next;
+    }
+
+    *out_size = size;
+    return array;
+}
+
+bool compare_objects_by_model(const mech_object a, const mech_object b) {
+    int model = strcmp(a.model, b.model);
+    return (model == 0);
+}
+
+bool partial_match_single(const mech_object a, const mech_object b) {
+    int pilot = strcmp(a.assigned_pilot, b.assigned_pilot);
+    return (pilot == 0) || a.type == b.type || a.reactor_power == b.reactor_power || a.armor_health == b.armor_health || a.ammo == b.ammo || a.condition == b.condition;
+}
+
+bool partial_match_multi(const mech_object a, const mech_object b) {
+    int pilot = strcmp(a.assigned_pilot, b.assigned_pilot);
+    return (pilot == 0) && a.type == b.type && a.reactor_power == b.reactor_power && a.armor_health == b.armor_health && a.ammo == b.ammo && a.condition == b.condition;
+}
+
+List* filter_by_reactor_power(List* list, int threshold) {
+    if (list == NULL) return NULL;
+
+    List* filtered = malloc(sizeof(List));
+    if (filtered == NULL) return NULL;
+
+    filtered->head = NULL;
+    filtered->tail = NULL;
 
     for (Node* p = list->head; p != NULL; p = p->next) {
-        if (p->mechObj.armor_health > threshold) {
+        if (p->mechObj.reactor_power >= threshold) {
             push_back(filtered, p->mechObj);
         }
     }
@@ -200,153 +312,328 @@ List* filter_by_armor(List* list, int threshold) {
     return filtered;
 }
 
-List* sort_by_armor(List* list) {
-    List* sorted = NULL;
+List* filter_by_armor(List* list, int threshold) {
+    if (list == NULL) return NULL;
+
+    List* filtered = malloc(sizeof(List));
+    if (filtered == NULL) return NULL;
+
+    filtered->head = NULL;
+    filtered->tail = NULL;
 
     for (Node* p = list->head; p != NULL; p = p->next) {
-
-    }
-
-    return sorted;
-}
-
-List* sort_by_name(List* list) {
-    List* sorted = NULL;
-
-    for (Node* p = list->head; p != NULL; p = p->next) {
-
-    }
-
-    return sorted;
-}
-
-///////////////////////////////////
-
-/*Node* insert_sorted(Node* head, int value) {
-    Node* n = calloc(1, sizeof(Node));
-    n->value = value;
-
-    if (head == NULL || value <= head->value) {
-        n->next = head;
-        return n;
-    }
-
-    Node* p = head;
-    while (p->next != NULL && (p->next)->value < value) {
-        p = p->next;
-    }
-
-    n->next = p->next;
-    p->next = n;
-
-    return head;
-}
-
-Node* sort_list(Node* head) {
-    Node* sorted = NULL;
-
-    while (head != NULL) {
-        Node* next = head->next;
-
-        sorted = insert_sorted(sorted, head->value);
-
-        free(head);
-        head = next;
-    }
-
-    return sorted;
-}
-
-Node* insert_node_sorted(Node* sorted, Node* node) {
-    if (sorted == NULL || node->value <= sorted->value) {
-        node->next = sorted;
-        return node;
-    }
-
-    Node* p = sorted;
-    while (p->next != NULL && p->next->value < node->value) {
-        p = p->next;
-    }
-
-    node->next = p->next;
-    p->next = node;
-
-    return sorted;
-}
-
-Node* sort_list_inplace(Node* head) {
-    Node* sorted = NULL;
-
-    while (head != NULL) {
-        Node* next = head->next;
-
-        head-> next = NULL;
-
-        sorted = insert_node_sorted(sorted, head);
-
-        head = next;
-    }
-
-    return sorted;
-}
-
-Node* remove_first(Node* head, int value) {
-    if (head == NULL) return head;
-
-    if (head->value == value) {
-        Node* next = head->next;
-        free(head);
-        return next;
-    }
-
-    Node* p = head;
-    while (p->next != NULL && (p->next)->value != value) {
-        p = p->next;
-    }
-
-    if (p->next != NULL) {
-        Node* to_delete = p->next;
-        p->next = to_delete->next;
-        free(to_delete);
-    }
-
-    return head;
-}
-
-Node* remove_all(Node* head, int value) {
-    while (head != NULL && head->value == value) {
-        Node* next = head->next;
-        free(head);
-        head = next;
-    }
-
-    if (head == NULL) return NULL;
-
-    Node* p = head;
-    while (p->next != NULL) {
-        if (p->next->value == value) {
-            Node* to_delete = p->next;
-            p->next = to_delte->next;
-            free(to_delete);
-        } else {
-            p = p->next;
+        if (p->mechObj.armor_health >= threshold) {
+            push_back(filtered, p->mechObj);
         }
     }
 
-    return head;
-}*/
-
-/////////////////////////////////
-int cmp_int_asc(const void* a, const void* b) {
-    const int* x = (const int*)a;
-    const int* y = (const int*)b;
-    if (*x < *y) return -1;
-    if (*x > *y) return 1;
-    return 0;
+    return filtered;
 }
 
+List* filter_by_ammo(List* list, int threshold) {
+    if (list == NULL) return NULL;
 
+    List* filtered = malloc(sizeof(List));
+    if (filtered == NULL) return NULL;
 
+    filtered->head = NULL;
+    filtered->tail = NULL;
+
+    for (Node* p = list->head; p != NULL; p = p->next) {
+        if (p->mechObj.ammo >= threshold) {
+            push_back(filtered, p->mechObj);
+        }
+    }
+
+    return filtered;
+}
+
+List copy_list(const List *src) {
+    List dst = { NULL, NULL };
+
+    for (Node *n = src->head; n; n = n->next) {
+        Node *newNode = create_node(n->mechObj);
+
+        if (!dst.head) {
+            dst.head = dst.tail = newNode;
+        } else {
+            dst.tail->next = newNode;
+            newNode->prev = dst.tail;
+            dst.tail = newNode;
+        }
+    }
+    return dst;
+}
+
+List* copy_list_ptr(const List* list) {
+    if (list == NULL) return NULL;
+
+    List* copy = malloc(sizeof(List));
+    if (!copy) return NULL;
+
+    copy->head = NULL;
+    copy->tail = NULL;
+
+    for (Node* p = list->head; p != NULL; p = p->next) {
+        Node* n = malloc(sizeof(Node));
+        if (!n) continue;
+
+        n->mechObj = p->mechObj;
+        n->next = NULL;
+        n->prev = copy->tail;
+
+        if (copy->tail)
+            copy->tail->next = n;
+        else
+            copy->head = n;
+
+        copy->tail = n;
+    }
+
+    return copy;
+}
+
+Node* split(Node *head, int n) {
+    while (--n && head)
+        head = head->next;
+
+    if (!head)
+        return NULL;
+
+    Node *second = head->next;
+    head->next = NULL;
+
+    if (second)
+        second->prev = NULL;
+
+    return second;
+}
+
+Node* merge(Node *a, Node *b, Node **outTail) {
+    Node *head = NULL, *curr = NULL;
+
+    while (a && b) {
+        Node *next;
+        if (strcmp(a->mechObj.model, b->mechObj.model) <= 0) {
+            next = a; a = a->next;
+        } else {
+            next = b; b = b->next;
+        }
+
+        next->prev = curr;
+        next->next = NULL;
+
+        if (!head) head = next;
+        else curr->next = next;
+
+        curr = next;
+    }
+
+    Node *rest = a ? a : b;
+    while (rest) {
+        Node *next = rest;
+        rest = rest->next;
+
+        next->prev = curr;
+        next->next = NULL;
+
+        if (!head) head = next;
+        else curr->next = next;
+
+        curr = next;
+    }
+
+    *outTail = curr;
+    return head;
+}
+
+void merge_sort_in_place(List *list) {
+    int n = count_elements(list);
+    if (n < 2) return;
+
+    for (int size = 1; size < n; size *= 2) {
+        Node *curr = list->head;
+        Node *newHead = NULL;
+        Node *newTail = NULL;
+
+        while (curr) {
+            Node *left = curr;
+            Node *right = split(left, size);
+            curr = right ? split(right, size) : NULL;
+
+            Node *mergedTail;
+            Node *mergedHead = merge(left, right, &mergedTail);
+
+            if (!newHead) {
+                newHead = mergedHead;
+                newTail = mergedTail;
+            } else {
+                newTail->next = mergedHead;
+                mergedHead->prev = newTail;
+                newTail = mergedTail;
+            }
+        }
+
+        list->head = newHead;
+        list->tail = newTail;
+    }
+}
+
+List merge_sort_list(const List *src) {
+    List sorted = copy_list(src);
+    merge_sort_in_place(&sorted);
+    return sorted;
+}
+
+List* sort_by_reactor_power(const List* list, sort_order order) {
+    if (list == NULL)
+        return NULL;
+
+    List* sorted = copy_list_ptr(list);
+    if (sorted == NULL || sorted->head == NULL)
+        return sorted;
+
+    Node* current = sorted->head->next;
+
+    while (current != NULL) {
+        Node* next = current->next;
+        Node* pos = current->prev;
+
+        if (current->next)
+            current->next->prev = current->prev;
+        else
+            sorted->tail = current->prev;
+
+        current->prev->next = current->next;
+
+        while (pos != NULL &&
+              ((order == SORT_ASC  && current->mechObj.reactor_power < pos->mechObj.reactor_power) ||
+               (order == SORT_DESC && current->mechObj.reactor_power > pos->mechObj.reactor_power))) {
+            pos = pos->prev;
+        }
+
+        if (pos == NULL) {
+            current->next = sorted->head;
+            current->prev = NULL;
+            sorted->head->prev = current;
+            sorted->head = current;
+        } else {
+            current->next = pos->next;
+            current->prev = pos;
+
+            if (pos->next)
+                pos->next->prev = current;
+            else
+                sorted->tail = current;
+
+            pos->next = current;
+        }
+
+        current = next;
+    }
+
+    return sorted;
+}
+
+List* sort_by_armor(const List* list, sort_order order) {
+    if (list == NULL)
+        return NULL;
+
+    List* sorted = copy_list_ptr(list);
+    if (sorted == NULL || sorted->head == NULL)
+        return sorted;
+
+    Node* current = sorted->head->next;
+
+    while (current != NULL) {
+        Node* next = current->next;
+        Node* pos = current->prev;
+
+        if (current->next)
+            current->next->prev = current->prev;
+        else
+            sorted->tail = current->prev;
+
+        current->prev->next = current->next;
+
+        while (pos != NULL &&
+              ((order == SORT_ASC  && current->mechObj.armor_health < pos->mechObj.armor_health) ||
+               (order == SORT_DESC && current->mechObj.armor_health > pos->mechObj.armor_health))) {
+            pos = pos->prev;
+        }
+
+        if (pos == NULL) {
+            current->next = sorted->head;
+            current->prev = NULL;
+            sorted->head->prev = current;
+            sorted->head = current;
+        } else {
+            current->next = pos->next;
+            current->prev = pos;
+
+            if (pos->next)
+                pos->next->prev = current;
+            else
+                sorted->tail = current;
+
+            pos->next = current;
+        }
+
+        current = next;
+    }
+
+    return sorted;
+}
+
+List* sort_by_ammo(const List* list, sort_order order) {
+    if (list == NULL)
+        return NULL;
+
+    List* sorted = copy_list_ptr(list);
+    if (sorted == NULL || sorted->head == NULL)
+        return sorted;
+
+    Node* current = sorted->head->next;
+
+    while (current != NULL) {
+        Node* next = current->next;
+        Node* pos = current->prev;
+
+        if (current->next)
+            current->next->prev = current->prev;
+        else
+            sorted->tail = current->prev;
+
+        current->prev->next = current->next;
+
+        while (pos != NULL &&
+              ((order == SORT_ASC  && current->mechObj.ammo < pos->mechObj.ammo) ||
+               (order == SORT_DESC && current->mechObj.ammo > pos->mechObj.ammo))) {
+            pos = pos->prev;
+        }
+
+        if (pos == NULL) {
+            current->next = sorted->head;
+            current->prev = NULL;
+            sorted->head->prev = current;
+            sorted->head = current;
+        } else {
+            current->next = pos->next;
+            current->prev = pos;
+
+            if (pos->next)
+                pos->next->prev = current;
+            else
+                sorted->tail = current;
+
+            pos->next = current;
+        }
+
+        current = next;
+    }
+
+    return sorted;
+}
 
 const char* mech_type_to_str(enum mech_type t) {
     switch (t) {
@@ -361,10 +648,10 @@ const char* mech_type_to_str(enum mech_type t) {
 const char* mech_condition_to_str(enum mech_condition c) {
     switch (c) {
         case SPRAWNY:           return "SPRAWNY";
-        case WYMAGA_PRZEGLADU:  return "WYMAGA PRZEGLADU";
+        case WYMAGA_PRZEGLADU:  return "WYMAGA PRZEGLĄDU";
         case USZKODZONY:        return "USZKODZONY";
         case W_NAPRAWIE:        return "W NAPRAWIE";
-        case W_DEMONTAZU:       return "W DEMONTAZU";
+        case W_DEMONTAZU:       return "W DEMONTAŻU";
         default:                return "NIEZNANY";
     }
 }
