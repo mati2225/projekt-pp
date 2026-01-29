@@ -8,7 +8,7 @@
 2. Zarządzanie kolekcją obiektów
 - [x] Program musi umożliwiać dodawanie nowych obiektów.
 - [x] Program musi umożliwiać edycję wybranego obiektu, z uwzględnieniem ewentualnych ograniczeń (np. pola nieedytowalne).
-- [-] Program musi umożliwiać usuwanie pojedynczego obiektu oraz usuwanie wielu obiektów spełniających wybrane kryterium.
+- [x] Program musi umożliwiać usuwanie pojedynczego obiektu oraz usuwanie wielu obiektów spełniających wybrane kryterium.
 - [x] Program musi uniemożliwiać usuwanie obiektów, które spełniają określone warunki wykluczające (jeśli przewiduje to temat projektu).
 3. Wyszukiwanie i filtrowanie
 - [x] Program musi umożliwiać wyszukiwanie obiektów według co najmniej dwóch różnych kryteriów (jednego pola tekstowego i jednego pola liczbowego).
