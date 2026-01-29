@@ -3,24 +3,28 @@
 #include "menu.h"
 #include "file.h"
 
-void show_intro();
+//#define DEBUG
 
 int main(int argc, char** argv) {
+#ifndef DEBUG
 	if (argc < 2) {
-		fprintf(stderr, "Blad: Nie podano pliku z danymi! Poprawne uzycie: %s <sciezka do pliku>\n", argv[0]);
+		fprintf(stderr, "Błąd: Nie podano pliku z danymi! Poprawne użycie: %s <ścieżka do pliku>\n", argv[0]);
 		return 1;
 	}
 
 	const char* path = argv[1];
+#else
+	const char* path = "test2.bin";
+#endif
 
 	if (!file_init(path)) return 1;
 
-	show_intro();
+	menu_show_intro();
 
 	while (menu_show() != 0);
 
-	//if (!file_save(path)) return 1;
+	if (!file_save(path)) return 1;
 
-	printf("[*] Wylaczanie programu...\n");
+	printf("[*] Zapisywanie danych i wyłączanie programu...\n");
 	return 0;
 }
