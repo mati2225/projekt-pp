@@ -6,5 +6,6 @@
 #include "file.h"
 
 int menu_show();
+void menu_show_intro();
 
 #endif
