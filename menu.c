@@ -111,7 +111,7 @@ void menu_add_new_mech() {
 }
 
 int menu_edit_mech_data(mech_object* mechObj) {
-	printf("\n╔═[EDYTOWANIE JEDNOSTKI]═════════╗\n║ 1. Zmień klasę mecha           ║\n║ 2. Zwiększ moc reaktora        ║\n║ 3. Zmniejsz moc reaktora       ║\n║ 4. Napraw pancerz              ║\n║ 5. Uzupełnij amunicję          ║\n║ 6. Przydziel pilota            ║\n║ 7. Zmień stan techniczny       ║\n║ 8. Usuń jednostkę z ewidencji  ║\n║ 0. Powrót do poprzedniego menu ║\n╚════════════════════════════════╝\n>> ");
+	printf("\n╔═[EDYTOWANIE JEDNOSTKI]═════════╗\n║ 1. Zmień nazwę mecha           ║\n║ 2. Zmień klasę mecha           ║\n║ 3. Zwiększ moc reaktora        ║\n║ 4. Zmniejsz moc reaktora       ║\n║ 5. Napraw pancerz              ║\n║ 6. Uzupełnij amunicję          ║\n║ 7. Przydziel pilota            ║\n║ 8. Zmień stan techniczny       ║\n║ 9. Usuń jednostkę z ewidencji  ║\n║ 0. Powrót do poprzedniego menu ║\n╚════════════════════════════════╝\n>> ");
 	
 	int power = 0, power_new = 0;
 	
@@ -124,7 +124,20 @@ int menu_edit_mech_data(mech_object* mechObj) {
 			return -1;
 		case '0':
 			return 0;
-		case '1': // Zmien klase mecha
+		case '1': //zmien nazwe mecha
+			printf("Obecna nazwa jednostki: \"%s\"\nPodaj nową nazwę\n>> ", mechObj->model);
+			char new_name[101];
+			getchar();
+
+			while (scanf("%100[^\n]s", new_name) != 1) {
+				printf("[!] Wprowadzono błędne dane\nPodaj nową nazwę\n>> ");
+				while(getchar() != '\n');
+			}
+
+			printf("[!] Błąd: Nazwa (model) mecha jest jego identyfikatorem i nie można jej zmieniać");
+
+			return 1;
+		case '2': // Zmien klase mecha
 			printf("Obecna klasa jednostki \"%s\": %s\n", mechObj->model, mech_type_to_str(mechObj->type));
 			printf("Podaj nową klasę (0 - Szturmowy; 1 - Wsparcia ogniowego; 2 - Rekonesansowy; 3 - Obronny; )\nWprowadzenie wartości z przedziału innego niż <0; 3> oznacza brak klasy\n>> ");
 			
@@ -137,8 +150,8 @@ int menu_edit_mech_data(mech_object* mechObj) {
 			mechObj->type = (enum mech_type)type;
 
 			printf("[i] Klasa mecha zostala zmieniona\n");
-			return 1;
-		case '2': // Zwieksz moc reaktora
+			return 2;
+		case '3': // Zwieksz moc reaktora
 			printf("Obecna moc reaktora jednostki \"%s\": %d\n", mechObj->model, mechObj->reactor_power);
 			printf("Podaj o jaką wartość chcesz zwiększyć moc: ");
 			
@@ -156,8 +169,8 @@ int menu_edit_mech_data(mech_object* mechObj) {
 				printf("[i] Zwiększono moc reaktora\n");
 			}
 
-			return 2;
-		case '3': // Zmniejsz moc reaktora
+			return 3;
+		case '4': // Zmniejsz moc reaktora
 			printf("Obecna moc reaktora jednostki \"%s\": %d\n", mechObj->model, mechObj->reactor_power);
 			printf("Podaj o jaką wartość chcesz zmniejszyć moc: ");
 			
@@ -175,8 +188,8 @@ int menu_edit_mech_data(mech_object* mechObj) {
 				printf("[i] Zmniejszono moc reaktora\n");
 			}
 			
-			return 3;
-		case '4': // Napraw pancerz
+			return 4;
+		case '5': // Napraw pancerz
 			printf("Obecny stan pancerza jednostki \"%s\": %d\n", mechObj->model, mechObj->armor_health);
 			
 			if (mechObj->armor_health < 2000) {
@@ -184,8 +197,8 @@ int menu_edit_mech_data(mech_object* mechObj) {
 			}
 
 			printf("[i] Naprawiono pancerz\n");
-			return 4;
-		case '5': // Uzupelnij amunicje
+			return 5;
+		case '6': // Uzupelnij amunicje
 			printf("Obecna ilość amunicji jednostki \"%s\": %d\n", mechObj->model, mechObj->ammo);
 			
 			if (mechObj->armor_health < 1000) {
@@ -193,8 +206,8 @@ int menu_edit_mech_data(mech_object* mechObj) {
 			}
 
 			printf("[i] Uzupełniono amunicję\n");
-			return 5;
-		case '6': // Przydziel pilota
+			return 6;
+		case '7': // Przydziel pilota
 			printf("Obecnie przydzielony pilot jednostki \"%s\": %s\n", mechObj->model, mechObj->assigned_pilot);
 			printf("Podaj imię i nazwisko pilota (max. 50 znaków)\nW przypadku podania spacji nie zostanie przydzielony żaden pilot\n>> ");
 			
@@ -213,8 +226,8 @@ int menu_edit_mech_data(mech_object* mechObj) {
 				printf("[i] Przydzielono nowego pilota\n");
 			}
 
-			return 6;
-		case '7': // Zmien stan techniczny
+			return 7;
+		case '8': // Zmien stan techniczny
 			printf("Obecny stan techniczny jednostki \"%s\": %s\n", mechObj->model, mech_condition_to_str(mechObj->condition));
 			printf("Podaj nowy stan techniczny (0 - Sprawny; 1 - Wymaga przegledu; 2 - Uszkodzony; 3 - W naprawie; 4 - W demontażu; )\n>> ");
 			
@@ -232,8 +245,8 @@ int menu_edit_mech_data(mech_object* mechObj) {
             mechObj->condition = (enum mech_condition)condition;
 			
 			printf("[i] Stan techniczny mecha został zmieniony\n");
-			return 7;
-		case '8': // Usun jednostke z ewidencji	
+			return 8;
+		case '9': // Usun jednostke z ewidencji	
 			printf("!!!!!! OSTRZEŻENIE !!!!!!\nCzy napewno chcesz usunąć jednostkę \"%s\"? (operacji nie można cofnąć)\nWpisz literę 'T' lub 't' aby usunąć jednostkę\nWpisz literę 'N' lub 'n' aby anulować\n>> ", mechObj->model);
 			
 			char choicee;
@@ -243,7 +256,7 @@ int menu_edit_mech_data(mech_object* mechObj) {
 			if (choicee == 'T' || choicee == 't') {
 				if (mechObj->condition == W_NAPRAWIE || mechObj->condition == W_DEMONTAZU) {
 					remove_first(&global_list, *mechObj);
-					printf("[i] Jednostka \"%s\" została usunięta", mechObj->model);
+					printf("[i] Jednostka została usunięta");
 				} else {
 					printf("[!] Błąd: Nie można usunąć jednostki \"%s\" gdyż nie jest w stanie naprawy lub demontażu", mechObj->model);
 				}
@@ -251,7 +264,7 @@ int menu_edit_mech_data(mech_object* mechObj) {
 				printf("[i] Operacja została anulowana");
 			}
 			
-			return 8;
+			return 9;
 	}
 }
 

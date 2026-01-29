@@ -7,7 +7,7 @@
 - [x] Kolekcja obiektów musi być przechowywana w pamięci typu sterta.
 2. Zarządzanie kolekcją obiektów
 - [x] Program musi umożliwiać dodawanie nowych obiektów.
-- [ ] Program musi umożliwiać edycję wybranego obiektu, z uwzględnieniem ewentualnych ograniczeń (np. pola nieedytowalne).
+- [x] Program musi umożliwiać edycję wybranego obiektu, z uwzględnieniem ewentualnych ograniczeń (np. pola nieedytowalne).
 - [ ] Program musi umożliwiać usuwanie pojedynczego obiektu oraz usuwanie wielu obiektów spełniających wybrane kryterium.
 - [x] Program musi uniemożliwiać usuwanie obiektów, które spełniają określone warunki wykluczające (jeśli przewiduje to temat projektu).
 3. Wyszukiwanie i filtrowanie
@@ -18,7 +18,7 @@
 - [x] Program musi umożliwiać sortowanie alfabetyczne według wybranego pola tekstowego.
 - [x] Program musi umożliwiać sortowanie według wybranego pola liczbowego.
 - [x] Sortowanie może być zrealizowane jako przepisanie danych do nowej struktury z zachowaniem wymaganego porządku - nie ma konieczności przestawiania elementów na strukturze oryginalnej.
-- [ ] Sortowanie musi działać poprawnie niezależnie od liczby obiektów.
+- [x] Sortowanie musi działać poprawnie niezależnie od liczby obiektów.
 5. Prezentacja danych
 - [x] Program musi umożliwiać wyświetlanie pełnej listy obiektów oraz wyników wyszukiwania w formie czytelnych zestawień.
 6. Trwałość danych
@@ -31,7 +31,7 @@
 - [x] Kod programu musi być modularny, a funkcje logicznie rozdzielone zgodnie z odpowiedzialnościami.
 - [x] Program musi być podzielony na pliki źródłowe i nagłówkowe, zgodnie z zasadami modularności w C.
 - [x] Program musi wykorzystywać bezpieczne funkcje wejścia-wyjścia, walidować dane wejściowe oraz unikać przepełnień buforów.
-- [ ] Program musi unikać wycieków pamięci i niepoprawnych operacji na wskaźnikach.
+- [x] Program musi unikać wycieków pamięci i niepoprawnych operacji na wskaźnikach.
 2. Interfejs użytkownika
 - [x] Interfejs programu musi być oparty na czytelnym, intuicyjnym menu tekstowym obejmującym wszystkie funkcje systemu.
 - [x] Komunikaty programu muszą być jednoznaczne, zrozumiałe i informować użytkownika o błędach oraz sposobach ich rozwiązania.
