@@ -4,6 +4,9 @@ DATA_FILE = test2.bin
 
 all: projektpp
 
+debug: main.o menu.o data.o file.o
+	$(CC) main.o menu.o data.o file.o -g -o projektpp
+
 projektpp: main.o menu.o data.o file.o
 	$(CC) main.o menu.o data.o file.o -o projektpp
 
