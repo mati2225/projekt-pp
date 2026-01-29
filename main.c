@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 
 	const char* path = argv[1];
 #else
-	const char* path = "test2.bin";
+	const char* path = "data.bin";
 #endif
 
 	if (!file_init(path)) return 1;
